@@ -35,10 +35,10 @@ sum_costs([c(In,Out)|Cs], P0, P, I0, I, O0, O) :-
     length(Out, LOut), O1 is LOut + O0,
     sum_costs(Cs, P1, P, I1, I, O1, O).
 
-cost_changed(N, CostV-PLA, NCostV-PLA) :-
+cost_changed(N, CostV-PLA, CostV-PLA) :-
     compute_cost(PLA, Cost),
     \+ arg(N, CostV, Cost),
-    change_arg(N, CostV, _, Cost, NCostV).
+    setarg(N, CostV, Cost). % Destructive Assignment!
 
 
 co_cover([],_,[]).
@@ -50,12 +50,13 @@ co_cover([_|Cs], F, Xs) :-
     co_cover(Cs, F, Xs).
 
 cofactor([], _, []).
-cofactor([C+|Cs], F, Xs) :-
-    ( C=:= F -> Xs = Cs
+cofactor([C|Cs], F, Xs) :-
+    ( C =:= F -> Xs = Cs
     ; C>>1 > F>>1 -> Xs = [C|Cs]
     ; C>>1 < F>>1 -> Xs = [C|X1s],
 		     cofactor(Cs, F, X1s)
     ).
+    
 			       
 % Positive and Negative Co-Factors
 
